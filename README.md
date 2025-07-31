@@ -1,7 +1,7 @@
 # EADYRKINST
 MATLAB code for calculating the eigenmode solutions of the Eady model of Rossby-Kelvin instability formulated in Zurita-Gotor and Held (2025)
 
-The dispersion relation and various eigenmodes can be calculated by invoking the function eigensolve as follows:
+The dispersion relation and the various eigenmodes can be calculated by invoking the function eigensolve as follows:
 
 sweep=eigensolve(.01:.01:1.,-4:.1:8,-2:.05:2,@eadymodel,{3.5,-0.5});
 
