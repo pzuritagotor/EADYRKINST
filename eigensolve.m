@@ -72,8 +72,8 @@ for i=1:length(klis); K=klis(i);
     cost=costfunction(creal,cimag,K,model,modelparams);
     M=findlocalmin(abs(cost));   
     for k=1:size(M,1)
-       crealfine=linspace(creal(M(k,1)-1),creal(M(k,1)+1),11);
-       cimagfine=linspace(cimag(M(k,2)-1),cimag(M(k,2)+1),11);
+       crealfine=linspace(creal(M(k,1)-1),creal(M(k,1)+1),5);
+       cimagfine=linspace(cimag(M(k,2)-1),cimag(M(k,2)+1),5);
        [cr ,ci]=refinesol(crealfine,cimagfine,K,model,modelparams,tol,itmax,VERBOSE);       
        for j=1:length(cr)
            if(isnan(cr(j))) continue; end   %Not converged
@@ -109,8 +109,8 @@ if(abs(C(M(1),M(2)))<tol)    %A single minimum, already converged
     if(VERBOSE>1) disp("Done refining: C="+abs(C(M(1),M(2)))); end
 else     %A single minimum, needs refining
     if(VERBOSE>1) disp("Pending "+itmax+" refining steps"); end
-    creal=linspace(creal(M(1)-1),creal(M(1)+1),11);
-    cimag=linspace(cimag(M(2)-1),cimag(M(2)+1),11);
+    creal=linspace(creal(M(1)-1),creal(M(1)+1),5);
+    cimag=linspace(cimag(M(2)-1),cimag(M(2)+1),5);
     [cr,ci]=refinesol(creal,cimag,K,model,modelparams,tol,itmax-1,VERBOSE);
 end
 end
