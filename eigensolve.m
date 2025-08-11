@@ -10,12 +10,15 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 %  creal:         range of real phase speeds to explore (a vector)
 %  cimag:         range of imaginary phase speeds to explore (a vector)
 %
+% Ideally, the spacing of the vectors creal and cimag should be as fine as the spacing between the real eigenvalues, or
+% otherwise some solutions may be lost. The required spacing can be determined by trial and error.
+%
 % The following input arguments are optional:
-%  model:         function calculating the cost for the specified model (a handle, default: @eadymodel)
+%  model:         function calculating the cost for the specified model (a function handle, default: @eadymodel)
 %  modelparams:   model parameters (a list of cells, default: {}). A model may not have parameters, or allow defaults
 %  tol:           cost function tolerance required for convergence (a real number, default: 1E-5)
 %  itmax:         maximum number of refining iterations to achieve convergence (an integer, default: 50)
-%  VERBOSE:       level of verbosity in the output (0:no output, 1:progress info only 2:full info during iterations)
+%  VERBOSE:       level of verbosity in the output (0:no output, 1:progress info only (default), 2:full info during iterations)
 %  sweep:         Allows to augment the results of a previous calculation when passed as input (a list of datapoints)
 %
 % Output argument:
@@ -36,7 +39,7 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 % ---------------
 % The following call produces the dispersion relation (at reduced resolution) for the control simulation in the paper
 %
-% sweep=eigensolve(.01:.01:1.,-4:.1:8,-2:.05:2,@eadymodel,{3.5,-0.5});
+% sweep=eigensolve([0.01:0.01:1],[-4:0.1:8],[-2:0.05:2],@eadymodel,{3.5,-0.5});
 %
 % The results from this calculation are also provided in the file control-lr.mat
 %
