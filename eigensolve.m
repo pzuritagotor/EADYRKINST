@@ -10,7 +10,7 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 %  creal:         range of real phase speeds to explore (a vector)
 %  cimag:         range of imaginary phase speeds to explore (a vector)
 %
-% Ideally, the spacing of the vectors creal and cimag should be as fine as the spacing between the real eigenvalues, or
+% Ideally, the spacing of the vectors creal and cimag should be as fine as the spacing between the true eigenvalues, or
 % otherwise some solutions may be lost. The required spacing can be determined by trial and error.
 %
 % The following input arguments are optional:
