@@ -96,11 +96,11 @@ end
 function [cr,ci]=refinesol(creal,cimag,K,model,modelparams,tol,itmax,VERBOSE)
 % Recursive function to succesively refine the solution into an identified minima
 
-if (itmax==0) cr=NaN; 
+if (itmax==0) cr=NaN;  ci=NaN;
   if(VERBOSE>1) warning('No convergence refining. Try increasing itmax'); end; return; end
 C=costfunction(creal,cimag,K,model,modelparams);
 M=findlocalmin(abs(C));
-if isempty(M) cr=NaN; return; end
+if isempty(M) cr=NaN; ci=NaN; return; end
 if(size(M,1)>1)     %More than one minimum after refining
     m=inf; i=1; for k=1:size(M,1); if abs(C(M(k,1),M(k,2)))<m i=k; m=abs(C(M(k,1),M(k,2))); end; end
     M=M(i,:);  if(VERBOSE>1) warning('Possibly skiping some minima. Try a finer phase speed range'); end
