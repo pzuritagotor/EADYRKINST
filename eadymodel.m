@@ -1,6 +1,6 @@
 function [cost,sol]=eadymodel(K,c,eadyparams)
 
-% Integrates the Eady model in Zurita-Gotor and Held (2025) and evaluates the cost function. 
+% Integrates the Eady model in Zurita-Gotor and Held (2026) and evaluates the cost function. 
 %
 % [cost,sol]=eadymodel(K,c,[eadyparams])
 %
@@ -10,7 +10,7 @@ function [cost,sol]=eadymodel(K,c,eadyparams)
 % and Lambda the poleward shear. When either of these are not indicated, defaults are taken from the
 % control case in the paper {3.5, -0.5}
 %
-% Output arguments are the value of the cost function (cost, defined by Eq. 15 in the paper) and  
+% Output arguments are the value of the cost function (cost, defined by Eq. 20 in the paper) and  
 % the full solution to the ODE (sol). This is a structure consisting of the following fields:
 %     sol.y: latitude (a list of real values)
 %     sol.u: zonal velocity (a list of complex values)
@@ -30,8 +30,12 @@ udot=@(y,u) [u(2); K^2*(1-(.5*y^2-c)^2)*u(1)];
 
 %Evaluate cost function
 U=.5*L^2;                  %Nondimensional velocity at the front
-m_over_L=sqrt(1+K^2/L^2);  %Use 1 for longwave approximation
-cost=(U-c)*(1+m_over_L*(U-c))*u(end,1)-u(end,2)*(L-Lambda)/K^2;  %Eq. 15
+
+m2=L^2+K^2*(1-(U-real(c))^2);
+if m2<0 cost=NaN; return;  %Propagating poleward solution
+else m=sqrt(m2); end
+
+cost=(U-c)*(1+m/L*(U-c))*u(end,1)-u(end,2)*((L-Lambda)/K^2-(U-c)^2/L);  %Eq. 20
 
 if nargout>1 %For efficiency when iterating, calculate full solution only when requested 
   sol.y=y;                     %latitudinal coordinate
@@ -42,5 +46,3 @@ end
 
 
 end
-
-
