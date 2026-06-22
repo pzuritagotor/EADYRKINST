@@ -2,7 +2,7 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 
 % sweep=eigensolve(klis,creal,cimag,[model,modelparams,tol,itmax,VERBOSE,sweep])
 %
-% Calculates the solutions to the eigenvalue problem formulated in Zurita-Gotor and Held (2025)
+% Calculates the solutions to the eigenvalue problem formulated in Zurita-Gotor and Held (2026)
 %
 % Input arguments:
 % ----------------
@@ -10,15 +10,12 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 %  creal:         range of real phase speeds to explore (a vector)
 %  cimag:         range of imaginary phase speeds to explore (a vector)
 %
-% Ideally, the spacing of the vectors creal and cimag should be as fine as the spacing between the true eigenvalues, or
-% otherwise some solutions may be lost. The required spacing can be determined by trial and error.
-%
 % The following input arguments are optional:
-%  model:         function calculating the cost for the specified model (a function handle, default: @eadymodel)
+%  model:         function calculating the cost for the specified model (a handle, default: @eadymodel)
 %  modelparams:   model parameters (a list of cells, default: {}). A model may not have parameters, or allow defaults
 %  tol:           cost function tolerance required for convergence (a real number, default: 1E-5)
 %  itmax:         maximum number of refining iterations to achieve convergence (an integer, default: 50)
-%  VERBOSE:       level of verbosity in the output (0:no output, 1:progress info only (default), 2:full info during iterations)
+%  VERBOSE:       level of verbosity in the output (0:no output, 1:progress info only 2:full info during iterations)
 %  sweep:         Allows to augment the results of a previous calculation when passed as input (a list of datapoints)
 %
 % Output argument:
@@ -39,7 +36,7 @@ function sweep=eigensolve(klis,creal,cimag,model,modelparams,tol,itmax,VERBOSE,s
 % ---------------
 % The following call produces the dispersion relation (at reduced resolution) for the control simulation in the paper
 %
-% sweep=eigensolve([0.01:0.01:1],[-4:0.1:8],[-2:0.05:2],@eadymodel,{3.5,-0.5});
+% sweep=eigensolve(.01:.01:1.,-4:.1:8,-2:.05:2,@eadymodel,{3.5,-0.5});
 %
 % The results from this calculation are also provided in the file control-lr.mat
 %
@@ -75,8 +72,8 @@ for i=1:length(klis); K=klis(i);
     cost=costfunction(creal,cimag,K,model,modelparams);
     M=findlocalmin(abs(cost));   
     for k=1:size(M,1)
-       crealfine=linspace(creal(M(k,1)-1),creal(M(k,1)+1),5);
-       cimagfine=linspace(cimag(M(k,2)-1),cimag(M(k,2)+1),5);
+       crealfine=linspace(creal(M(k,1)-1),creal(M(k,1)+1),11);
+       cimagfine=linspace(cimag(M(k,2)-1),cimag(M(k,2)+1),11);
        [cr ,ci]=refinesol(crealfine,cimagfine,K,model,modelparams,tol,itmax,VERBOSE);       
        for j=1:length(cr)
            if(isnan(cr(j))) continue; end   %Not converged
@@ -96,7 +93,7 @@ end
 function [cr,ci]=refinesol(creal,cimag,K,model,modelparams,tol,itmax,VERBOSE)
 % Recursive function to succesively refine the solution into an identified minima
 
-if (itmax==0) cr=NaN;  ci=NaN;
+if (itmax==0) cr=NaN; ci=NaN;
   if(VERBOSE>1) warning('No convergence refining. Try increasing itmax'); end; return; end
 C=costfunction(creal,cimag,K,model,modelparams);
 M=findlocalmin(abs(C));
@@ -112,8 +109,8 @@ if(abs(C(M(1),M(2)))<tol)    %A single minimum, already converged
     if(VERBOSE>1) disp("Done refining: C="+abs(C(M(1),M(2)))); end
 else     %A single minimum, needs refining
     if(VERBOSE>1) disp("Pending "+itmax+" refining steps"); end
-    creal=linspace(creal(M(1)-1),creal(M(1)+1),5);
-    cimag=linspace(cimag(M(2)-1),cimag(M(2)+1),5);
+    creal=linspace(creal(M(1)-1),creal(M(1)+1),11);
+    cimag=linspace(cimag(M(2)-1),cimag(M(2)+1),11);
     [cr,ci]=refinesol(creal,cimag,K,model,modelparams,tol,itmax-1,VERBOSE);
 end
 end
@@ -139,6 +136,7 @@ function ind=findlocalmin(A)
 [NX, NY]=size(A);
 ind=[];
 for i=2:NX-1; for j=2:NY-1;
+  if isnan(A(i,j)) continue; end
   if A(i,j)>A(i,j-1) continue; end
   if A(i,j)>A(i,j+1) continue; end
   if A(i,j)>A(i-1,j) continue; end
@@ -153,5 +151,3 @@ end; end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
