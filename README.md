@@ -7,7 +7,7 @@ sweep=eigensolve([0.01:0.01:1],[-4:0.1:8],[-2:0.05:2],@eadymodel,{3.5,-0.5});
 
 This also requires the function eadymodel.m to be available. The function eigensolve is general and can be used to calculate the
 eigenvalues in other configurations than that discussed in the paper, by simply calling eigensolve using the alternative model. For
-instance, use @eadymodelsglong instead for the semigeostrophic longwave approximation in the paper.
+instance, use @eadymodelsglong instead for the semigeostrophic longwave approximation in the supplemental material.
 
 The data file control-lr.mat contains the output resulting from the above execution of eigensolve.
 
